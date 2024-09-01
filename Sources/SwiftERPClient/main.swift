@@ -1,8 +1,15 @@
 import SwiftERP
 
-let a = 17
-let b = 25
+@ERPenum
+enum Itemgroup {
+    
+    @ERPcase(id: "M5Q1Q7CA7P", codable: "Test 1") case TEST_1
+    @ERPcase(id: "OA1G29Y2D5", codable: "Test 2") case TEST_2
+}
 
-let (result, code) = #stringify(a + b)
-
-print("The value \(result) was produced by the code \"\(code)\"")
+@ERPenum
+enum Status {
+    
+    @ERPcase(id: "TB4AKAOM84", codable: 1) case created
+    @ERPcase(id: "DJX3SZZVCN", codable: 2) case started
+}

@@ -1,11 +1,19 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+//
+//  SwiftERP.swift
+//  Funico Scheduler
+//
+//  Created by Damian Van de Kauter on 01/09/2024.
+//
 
-/// A macro that produces both a value and a string containing the
-/// source code that generated the value. For example,
-///
-///     #stringify(x + y)
-///
-/// produces a tuple `(x + y, "x + y")`.
-@freestanding(expression)
-public macro stringify<T>(_ value: T) -> (T, String) = #externalMacro(module: "SwiftERPMacros", type: "StringifyMacro")
+@attached(extension, conformances: ERPEnum, names: named(CodableType), named(init), named(id), named(codable))
+@attached(member, names: arbitrary)
+public macro ERPenum() = #externalMacro(
+    module: "SwiftERPMacros",
+    type: "ERPenumMacro"
+)
+
+@attached(peer)
+public macro ERPcase<C: Swift.Codable>(id: String, codable: C) = #externalMacro(
+    module: "SwiftERPMacros",
+    type: "ERPcaseMacro"
+)
