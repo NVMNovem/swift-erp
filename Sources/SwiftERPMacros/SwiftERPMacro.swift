@@ -69,33 +69,28 @@ public struct ERPCodableMacro: ExtensionMacro, MemberMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
-        if let classDecl = declaration.as(ClassDeclSyntax.self) {
-            let variableDeclSyntaxes = classDecl.memberBlock.members
+        let variableDeclSyntaxes: [VariableDeclSyntax]
+        switch declaration {
+        case let classDecl as ClassDeclSyntax:
+            variableDeclSyntaxes = classDecl.memberBlock.members
                 .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
                 .filter({ $0.isGetSet })
             
-            let idCodableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): Codable") {
-                try DeclSyntax.codingKeysEnum(variableDeclSyntaxes: variableDeclSyntaxes)
-            }
-            
-            return [
-                idCodableExtension
-            ]
-        } else if let structDecl = declaration.as(StructDeclSyntax.self) {
-            let variableDeclSyntaxes = structDecl.memberBlock.members
+        case let structDecl as StructDeclSyntax:
+            variableDeclSyntaxes = structDecl.memberBlock.members
                 .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
                 .filter({ $0.isGetSet })
-            
-            let idCodableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): Codable") {
-                try DeclSyntax.codingKeysEnum(variableDeclSyntaxes: variableDeclSyntaxes)
-            }
-            
-            return [
-                idCodableExtension
-            ]
-        } else {
-            throw Error.notAClassOrStruct
+        default:
+            return []
         }
+        
+        let idCodableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): Codable") {
+            try DeclSyntax.codingKeysEnum(variableDeclSyntaxes: variableDeclSyntaxes)
+        }
+        
+        return [
+            idCodableExtension
+        ]
     }
     
     public static func expansion(
@@ -103,13 +98,21 @@ public struct ERPCodableMacro: ExtensionMacro, MemberMacro {
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
     ) throws -> [SwiftSyntax.DeclSyntax] {
-        guard let classDecl = declaration.as(ClassDeclSyntax.self) else {
-            //TODO: Emit an error here
+        let variableDeclSyntaxes: [VariableDeclSyntax]
+        switch declaration {
+        case let classDecl as ClassDeclSyntax:
+            variableDeclSyntaxes = classDecl.memberBlock.members
+                .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
+                .filter({ $0.isGetSet })
+            
+        case let structDecl as StructDeclSyntax:
+            variableDeclSyntaxes = structDecl.memberBlock.members
+                .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
+                .filter({ $0.isGetSet })
+        default:
+            context.diagnose(Diagnose.notAClassOrStruct.diagnostic(node: node, from: declaration))
             return []
         }
-        let variableDeclSyntaxes = classDecl.memberBlock.members
-            .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
-            .filter({ $0.isGetSet })
         
         var variables: [String]? = nil
         for variableDeclSyntax in variableDeclSyntaxes {

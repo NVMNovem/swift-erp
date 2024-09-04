@@ -16,37 +16,6 @@ extension ERPCodableMacro {
     }
 }
 
-extension ERPCodableMacro.Error: DiagnosticMessage {
-    
-    var message: String {
-        switch self {
-        case .notAClassOrStruct:
-            return "The macro should be applied to a class or a struct"
-        }
-    }
-    
-    var diagnosticID: SwiftDiagnostics.MessageID {
-        switch self {
-        case .notAClassOrStruct:
-            return MessageID(domain: "ERPCodable", id: "notAClassOrStruct")
-        }
-    }
-    
-    var severity: SwiftDiagnostics.DiagnosticSeverity {
-        switch self {
-        case .notAClassOrStruct:
-            return .error
-        }
-    }
-    
-    func fixits(from declaration: some DeclGroupSyntax) -> [FixIt] {
-        switch self {
-        case .notAClassOrStruct:
-            return []
-        }
-    }
-}
-
 extension ERPCodableMacro.Error: LocalizedError {
     
     var errorCode: Int {
@@ -64,15 +33,5 @@ extension ERPCodableMacro.Error: LocalizedError {
                 table: "ERPCodableMacro+Error"
             )
         }
-    }
-}
-
-struct ERPCodableFixit: FixItMessage {
-    var message: String
-    var fixItID: MessageID
-    
-    init(_ message: String, diagnostic: DiagnosticMessage) {
-        self.message = message
-        self.fixItID = diagnostic.diagnosticID
     }
 }

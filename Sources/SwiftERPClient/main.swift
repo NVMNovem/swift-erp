@@ -14,7 +14,7 @@ enum Status {
     @ERPcase(id: "DJX3SZZVCN", codable: 2) case started
 }
 
-/*@ERPCodable
+@ERPCodable
 final class ProductionOrder {
     
     var po: String
@@ -22,4 +22,4 @@ final class ProductionOrder {
     @ERPEnum(String.self) var itemgroup: Itemgroup
     @ERPEnum(Int.self) var status: Status
     var name: String?
-}*/
+}
