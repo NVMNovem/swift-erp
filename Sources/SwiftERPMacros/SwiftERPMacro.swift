@@ -70,7 +70,9 @@ public struct ERPCodableMacro: ExtensionMacro, MemberMacro {
         in context: some MacroExpansionContext
     ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
         if let classDecl = declaration.as(ClassDeclSyntax.self) {
-            let variableDeclSyntaxes = classDecl.memberBlock.members.compactMap({ $0.decl.as(VariableDeclSyntax.self) })
+            let variableDeclSyntaxes = classDecl.memberBlock.members
+                .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
+                .filter({ $0.isGetSet })
             
             let idCodableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): Codable") {
                 try DeclSyntax.codingKeysEnum(variableDeclSyntaxes: variableDeclSyntaxes)
@@ -80,7 +82,9 @@ public struct ERPCodableMacro: ExtensionMacro, MemberMacro {
                 idCodableExtension
             ]
         } else if let structDecl = declaration.as(StructDeclSyntax.self) {
-            let variableDeclSyntaxes = structDecl.memberBlock.members.compactMap({ $0.decl.as(VariableDeclSyntax.self) })
+            let variableDeclSyntaxes = structDecl.memberBlock.members
+                .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
+                .filter({ $0.isGetSet })
             
             let idCodableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): Codable") {
                 try DeclSyntax.codingKeysEnum(variableDeclSyntaxes: variableDeclSyntaxes)
@@ -103,7 +107,9 @@ public struct ERPCodableMacro: ExtensionMacro, MemberMacro {
             //TODO: Emit an error here
             return []
         }
-        let variableDeclSyntaxes = classDecl.memberBlock.members.compactMap({ $0.decl.as(VariableDeclSyntax.self) })
+        let variableDeclSyntaxes = classDecl.memberBlock.members
+            .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
+            .filter({ $0.isGetSet })
         
         var variables: [String]? = nil
         for variableDeclSyntax in variableDeclSyntaxes {

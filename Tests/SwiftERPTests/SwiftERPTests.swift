@@ -156,6 +156,9 @@ final class SwiftERPTests: XCTestCase {
             @ERPCodable
             final class ProductionOrder {
             
+                typealias SortValue = Article
+                var sortValue: SortValue { return self.article }
+            
                 var po: String
                 var article: String
                 @ERPEnum(String.self) var itemgroup: Itemgroup
@@ -166,6 +169,9 @@ final class SwiftERPTests: XCTestCase {
             expandedSource:
             """
             final class ProductionOrder {
+            
+                typealias SortValue = Article
+                var sortValue: SortValue { return self.article }
             
                 var po: String
                 var article: String

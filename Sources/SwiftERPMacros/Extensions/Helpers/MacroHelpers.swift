@@ -79,4 +79,8 @@ internal extension VariableDeclSyntax {
     var patrnIsOptionalType: Bool {
         return self.patrnType?.as(OptionalTypeSyntax.self) != nil
     }
+    
+    var isGetSet: Bool {
+        return self.bindings.filter({ $0.accessorBlock != nil }).isEmpty
+    }
 }
