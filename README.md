@@ -1,0 +1,11 @@
+![SwiftERP_header](https://github.com/user-attachments/assets/724b6952-4b04-4413-b24e-27a099cbff6a)
+
+<h3 align="center">iOS · macOS · watchOS · tvOS · visionOS</h3>
+
+---
+
+A pure Swift macro that allows you to easily set an ID and a Codable value.
+
+This project is created and maintained by Novem.
+
+---
