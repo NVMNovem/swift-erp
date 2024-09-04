@@ -46,15 +46,16 @@ extension ERPCodableMacro {
             return try InitializerDeclSyntax("init(\(raw: parameters.joined(separator: ", ")))") {
                 for varDecl in variableDeclSyntaxes {
                     if let identifier = varDecl.patrnNameIdentifier {
+                        let optDecl = varDecl.patrnIsOptionalType ? "?" : ""
                         if varDecl.erpEnum {
                             if varDecl.erpEnumCodable {
                                 """
-                                self.\(identifier)Id = \(identifier).id
-                                self.\(identifier)Codable = \(identifier).codable
+                                self.\(identifier)Id = \(identifier)\(raw: optDecl).id
+                                self.\(identifier)Codable = \(identifier)\(raw: optDecl).codable
                                 """
                             } else {
                                 """
-                                self.\(identifier)Id = \(identifier).id
+                                self.\(identifier)Id = \(identifier)\(raw: optDecl).id
                                 """
                             }
                         } else {

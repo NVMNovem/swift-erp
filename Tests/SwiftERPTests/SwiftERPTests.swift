@@ -206,8 +206,8 @@ final class SwiftERPTests: XCTestCase {
                 init(po: String, article: String, itemgroup: Itemgroup?, status: Status, name: String?) {
                     self.po = po
                     self.article = article
-                    self.itemgroupId = itemgroup.id
-                self.itemgroupCodable = itemgroup.codable
+                    self.itemgroupId = itemgroup?.id
+                self.itemgroupCodable = itemgroup?.codable
                     self.statusId = status.id
                 self.statusCodable = status.codable
                     self.name = name
