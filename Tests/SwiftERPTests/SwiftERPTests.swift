@@ -177,7 +177,10 @@ final class SwiftERPTests: XCTestCase {
                 var article: String
                 var itemgroup: Itemgroup? {
                     get {
-                       try? Itemgroup(id: itemgroupId)
+                       guard let itemgroupId else {
+                           return nil
+                       }
+                       return try? Itemgroup(id: itemgroupId)
                     }
                     set {
                         itemgroupId = newValue.id
@@ -186,7 +189,7 @@ final class SwiftERPTests: XCTestCase {
                 }
                 var status: Status {
                     get {
-                       try! Status(id: statusId)
+                       return try! Status(id: statusId)
                     }
                     set {
                         statusId = newValue.id

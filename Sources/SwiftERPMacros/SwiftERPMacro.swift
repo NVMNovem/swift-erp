@@ -167,15 +167,25 @@ public struct ERPEnumMacro: AccessorMacro {
             return []
         }
         
-        let tryClause = variableDeclSyntax.patrnIsOptionalType ? "try?" : "try!"
+        let getAccessorDeclSyntax: AccessorDeclSyntax
+        if variableDeclSyntax.patrnIsOptionalType {
+            getAccessorDeclSyntax = AccessorDeclSyntax(stringLiteral: """
+                 get {
+                    guard let \(identifier)Id else { return nil }
+                    return try? \(type)(id: \(identifier)Id)
+                 }
+                 """)
+        } else {
+            getAccessorDeclSyntax = AccessorDeclSyntax(stringLiteral: """
+                 get {
+                    return try! \(type)(id: \(identifier)Id)
+                 }
+                 """)
+        }
         
         if variableDeclSyntax.erpEnumCodable {
             return [
-                AccessorDeclSyntax(stringLiteral: """
-                 get {
-                    \(tryClause) \(type)(id: \(identifier)Id)
-                 }
-                 """),
+                getAccessorDeclSyntax,
                 AccessorDeclSyntax(stringLiteral: """
                  set {
                  \(identifier)Id = newValue.id
@@ -185,11 +195,7 @@ public struct ERPEnumMacro: AccessorMacro {
             ]
         } else {
             return [
-                AccessorDeclSyntax(stringLiteral: """
-                 get {
-                    \(tryClause) \(type)(id: \(identifier)Id)
-                 }
-                 """),
+                getAccessorDeclSyntax,
                 AccessorDeclSyntax(stringLiteral: """
                  set {
                  \(identifier)Id = newValue.id
