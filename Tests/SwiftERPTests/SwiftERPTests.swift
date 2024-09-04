@@ -195,8 +195,8 @@ final class SwiftERPTests: XCTestCase {
                 }
                 var name: String?
             
-                private(set) var itemgroupId: String
-                private(set) var itemgroupCodable: String
+                private(set) var itemgroupId: String?
+                private(set) var itemgroupCodable: String?
                 private(set) var statusId: String
                 private(set) var statusCodable: Int
             

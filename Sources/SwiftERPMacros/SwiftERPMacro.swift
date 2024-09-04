@@ -117,15 +117,16 @@ public struct ERPCodableMacro: ExtensionMacro, MemberMacro {
         var variables: [String]? = nil
         for variableDeclSyntax in variableDeclSyntaxes {
             if let identifier = variableDeclSyntax.patrnNameIdentifier {
+                let optDecl = variableDeclSyntax.patrnIsOptionalType ? "?" : ""
                 
                 if variableDeclSyntax.erpEnum {
                     var newVariables: [String] = variables ?? []
-                    newVariables.append("private(set) var \(identifier)Id: String")
+                    newVariables.append("private(set) var \(identifier)Id: String\(optDecl)")
                     variables = newVariables
                     
                     if let codableType = variableDeclSyntax.erpEnumCodableType {
                         var newVariables: [String] = variables ?? []
-                        newVariables.append("private(set) var \(identifier)Codable: \(codableType)")
+                        newVariables.append("private(set) var \(identifier)Codable: \(codableType)\(optDecl)")
                         variables = newVariables
                     }
                 }
