@@ -17,3 +17,16 @@ public macro ERPcase<C: Swift.Codable>(id: String, codable: C) = #externalMacro(
     module: "SwiftERPMacros",
     type: "ERPcaseMacro"
 )
+
+@attached(extension, conformances: Codable, names: named(init), named(ERPCodingKeys))
+@attached(member, names: arbitrary)
+public macro ERPCodable() = #externalMacro(
+    module: "SwiftERPMacros",
+    type: "ERPCodableMacro"
+)
+
+@attached(accessor)
+public macro ERPEnum<T>(_ codableType: T.Type? = nil) = #externalMacro(
+    module: "SwiftERPMacros",
+    type: "ERPEnumMacro"
+)

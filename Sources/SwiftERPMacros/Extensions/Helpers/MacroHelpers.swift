@@ -41,3 +41,42 @@ internal extension ExprSyntaxProtocol {
     }
 }
 
+internal extension VariableDeclSyntax {
+    
+    func getAttributeSyntax(for name: String) -> AttributeSyntax? {
+        return self.attributes
+            .compactMap({ $0.as(AttributeSyntax.self) })
+            .first(where: { $0.attributeName.as(IdentifierTypeSyntax.self)?.name.text == name })
+    }
+}
+
+internal extension VariableDeclSyntax {
+    
+    var patrn: PatternBindingSyntax? {
+        return self.bindings.first
+    }
+    
+    var patrnNameIdentifier: IdentifierPatternSyntax? {
+        return self.patrn?.pattern.as(IdentifierPatternSyntax.self)
+    }
+    
+    var patrnTypeIdentifier: IdentifierPatternSyntax? {
+        return self.patrn?.pattern.as(IdentifierPatternSyntax.self)
+    }
+    
+    var patrnTypeUnwrapped: TypeSyntax? {
+        if let optionalTypeSyntax = self.patrnType?.as(OptionalTypeSyntax.self) {
+            return optionalTypeSyntax.wrappedType
+        } else {
+            return self.patrnType
+        }
+    }
+    
+    var patrnType: TypeSyntax? {
+        return self.patrn?.typeAnnotation?.type
+    }
+    
+    var patrnIsOptionalType: Bool {
+        return self.patrnType?.as(OptionalTypeSyntax.self) != nil
+    }
+}

@@ -1,8 +1,8 @@
 //
-//  ERPenumMacro+Error.swift
+//  ERPenumMacro+Diagnostic.swift
 //  SwiftERP
 //
-//  Created by Damian Van de Kauter on 01/09/2024.
+//  Created by Damian Van de Kauter on 02/09/2024.
 //
 
 import Foundation
@@ -11,13 +11,13 @@ import SwiftDiagnostics
 
 extension ERPenumMacro {
     
-    enum Error: Swift.Error {
+    enum Diagnose {
         case notAnEnum
         case noERPcases
     }
 }
 
-extension ERPenumMacro.Error: DiagnosticMessage {
+extension ERPenumMacro.Diagnose: DiagnosticMessage {
     
     var message: String {
         switch self {
@@ -42,11 +42,11 @@ extension ERPenumMacro.Error: DiagnosticMessage {
         case .notAnEnum:
             return .error
         case .noERPcases:
-            return .error
+            return .warning
         }
     }
     
-    func fixits(from declaration: some DeclGroupSyntax) -> [FixIt] {
+    func fixIts(from declaration: some DeclGroupSyntax) -> [FixIt] {
         switch self {
         case .notAnEnum:
             return []
@@ -69,30 +69,10 @@ extension ERPenumMacro.Error: DiagnosticMessage {
     }
 }
 
-extension ERPenumMacro.Error: LocalizedError {
+extension ERPenumMacro.Diagnose {
     
-    var errorCode: Int {
-        switch self {
-        case .notAnEnum:
-            return 1
-        case .noERPcases:
-            return 2
-        }
-    }
-    
-    var errorDescription: String? {
-        switch self {
-        case .notAnEnum:
-            return String(
-                localized: "The macro should be applied to an enum.",
-                table: "ERPenumMacro+Error"
-            )
-        case .noERPcases:
-            return String(
-                localized: "The enum doesn't contain any ERPcase's.",
-                table: "ERPenumMacro+Error"
-            )
-        }
+    func diagnostic(node: some SyntaxProtocol, from declaration: some DeclGroupSyntax) -> SwiftDiagnostics.Diagnostic {
+        Diagnostic(node: node, message: self, fixIts: fixIts(from: declaration))
     }
 }
 

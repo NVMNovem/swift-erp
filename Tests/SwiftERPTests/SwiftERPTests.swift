@@ -9,12 +9,15 @@ import XCTest
 import SwiftERPMacros
 
 let testMacros: [String: Macro.Type] = [
-    "ERPenum": ERPenumMacro.self
+    "ERPenum": ERPenumMacro.self,
+    
+    "ERPCodable": ERPCodableMacro.self,
+    "ERPEnum": ERPEnumMacro.self
 ]
 #endif
 
 final class SwiftERPTests: XCTestCase {
-    func testMacro1() throws {
+    func testERPenum1() throws {
 #if canImport(SwiftERPMacros)
         assertMacroExpansion(
             """
@@ -80,7 +83,7 @@ final class SwiftERPTests: XCTestCase {
 #endif
     }
     
-    func testMacro2() throws {
+    func testERPenum2() throws {
 #if canImport(SwiftERPMacros)
         assertMacroExpansion(
             """
@@ -136,6 +139,95 @@ final class SwiftERPTests: XCTestCase {
                     case .started:
                         return 2
                     }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+#else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+#endif
+    }
+    
+    func testERPCodable1() throws {
+#if canImport(SwiftERPMacros)
+        assertMacroExpansion(
+            """
+            @ERPCodable
+            final class ProductionOrder {
+            
+                var po: String
+                var article: String
+                @ERPEnum(String.self) var itemgroup: Itemgroup
+                @ERPEnum(Int.self) var status: Status
+                var name: String?
+            }
+            """,
+            expandedSource:
+            """
+            final class ProductionOrder {
+            
+                var po: String
+                var article: String
+                var itemgroup: Itemgroup {
+                    get {
+                       try! Itemgroup(id: itemgroupId)
+                    }
+                    set {
+                        self.itemgroupId = newValue.id
+                        self.itemgroupCodable = newValue.codable
+                    }
+                }
+                var status: Status {
+                    get {
+                       try! Status(id: statusId)
+                    }
+                    set {
+                        self.statusId = newValue.id
+                        self.statusCodable = newValue.codable
+                    }
+                }
+                var name: String?
+            
+                private(set) var itemgroupId: String
+                private(set) var itemgroupCodable: String
+                private(set) var statusId: String
+                private(set) var statusCodable: Int
+            
+                init(po: String, article: String, itemgroup: Itemgroup, status: Status, name: String?) {
+                    self.po = po
+                    self.article = article
+                    self.itemgroupId = itemgroup.id
+                self.itemgroupCodable = itemgroup.codable
+                    self.statusId = status.id
+                self.statusCodable = status.codable
+                    self.name = name
+                }
+            
+                init(from decoder: Decoder) throws {
+                    let values = try decoder.container(keyedBy: ERPCodingKeys.self)
+            
+                    po = try values.decode(String.self, forKey: .po)
+                    article = try values.decode(String.self, forKey: .article)
+                    itemgroupId = try values.decode(String.self, forKey: .itemgroupId)
+                itemgroupCodable = try values.decode(String.self, forKey: .itemgroupCodable)
+                    statusId = try values.decode(String.self, forKey: .statusId)
+                statusCodable = try values.decode(Int.self, forKey: .statusCodable)
+                    name = try values.decodeIfPresent(String.self, forKey: .name)
+                }
+            }
+            
+            extension ProductionOrder: Codable {
+                fileprivate enum ERPCodingKeys: String, CodingKey {
+                    case po = "po"
+                    case article = "article"
+                    case itemgroup = "itemgroup"
+                    case itemgroupId = "erp_itemgroupId"
+                    case itemgroupCodable = "erp_itemgroupCodable"
+                    case status = "status"
+                    case statusId = "erp_statusId"
+                    case statusCodable = "erp_statusCodable"
+                    case name = "name"
                 }
             }
             """,

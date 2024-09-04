@@ -12,89 +12,27 @@ public struct ERPenumMacro: ExtensionMacro, MemberMacro {
         providingExtensionsOf type: some TypeSyntaxProtocol,
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
-    ) throws -> [ExtensionDeclSyntax] {
+    ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
         guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-            throw Error.notAnEnum
+            context.diagnose(Diagnose.notAnEnum.diagnostic(node: node, from: declaration))
+            return []
         }
         
-        let enumCaseDecles = enumDecl.memberBlock.members.compactMap({ $0.decl.as(EnumCaseDeclSyntax.self) })
-        let caseTypes = enumCaseDecles.compactMap({ $0.codableAttributeExpression })
+        let enumCaseDeclSyntaxes = enumDecl.memberBlock.members.compactMap({ $0.decl.as(EnumCaseDeclSyntax.self) })
+        let caseTypes = enumCaseDeclSyntaxes.compactMap({ $0.codableAttributeExpression })
+        //TODO: Add Diagnose when multiple codable types (not the same type) are set (error)
+        //TODO: Add Diagnose when non supported codable types are set (error)
         guard let caseType = caseTypes.first?.getType() else {
-            throw Error.noERPcases
-        }
-        
-        let idInitializer = try InitializerDeclSyntax("init(id: String) throws") {
-            try SwitchExprSyntax("switch id") {
-                for enumCaseDecl in enumCaseDecles {
-                    for enumCaseElement in enumCaseDecl.elements {
-                        let identifier = enumCaseElement.name
-                        if let id = enumCaseDecl.idAttributeExpression {
-                            """
-                            case \(id.trimmed): self = .\(identifier)
-                            """
-                        }
-                    }
-                }
-                """
-                default: throw ERPEnumError.invalidId
-                """
-            }
-        }
-        let idVariable = try VariableDeclSyntax("var id: String") {
-            try SwitchExprSyntax("switch self") {
-                for enumCaseDecl in enumCaseDecles {
-                    for enumCaseElement in enumCaseDecl.elements {
-                        let identifier = enumCaseElement.name
-                        if let id = enumCaseDecl.idAttributeExpression {
-                            """
-                            case .\(identifier): return \(id.trimmed)
-                            """
-                        }
-                    }
-                }
-            }
-        }
-        
-        let codableInitializer = try InitializerDeclSyntax("init(codable: \(raw: caseType)) throws") {
-            try SwitchExprSyntax("switch codable") {
-                for enumCaseDecl in enumCaseDecles {
-                    for enumCaseElement in enumCaseDecl.elements {
-                        let identifier = enumCaseElement.name
-                        if let codable = enumCaseDecl.codableAttributeExpression {
-                            """
-                            case \(codable.trimmed): self = .\(identifier)
-                            """
-                        }
-                    }
-                }
-                """
-                default: throw ERPEnumError.invalidCodable
-                """
-            }
-        }
-        let codableVariable = try VariableDeclSyntax("var codable: \(raw: caseType)") {
-            try SwitchExprSyntax("switch self") {
-                for enumCaseDecl in enumCaseDecles {
-                    for enumCaseElement in enumCaseDecl.elements {
-                        let identifier = enumCaseElement.name
-                        if let codable = enumCaseDecl.codableAttributeExpression {
-                            """
-                            case .\(identifier): return \(codable.trimmed)
-                            """
-                        }
-                    }
-                }
-            }
+            context.diagnose(Diagnose.noERPcases.diagnostic(node: node, from: declaration))
+            return []
         }
         
         let idCodableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): ERPEnum") {
-            """
-            typealias CodableType = \(raw: caseType)
-            """
-            idInitializer
-            idVariable
-            codableInitializer
-            codableVariable
+            try TypeAliasDeclSyntax("typealias CodableType = \(raw: caseType)")
+            try DeclSyntax.idInitializer(enumCaseDeclSyntaxes: enumCaseDeclSyntaxes)
+            try DeclSyntax.idVariable(enumCaseDeclSyntaxes: enumCaseDeclSyntaxes)
+            try DeclSyntax.codableInitializer(enumCaseDeclSyntaxes: enumCaseDeclSyntaxes, caseType: caseType)
+            try DeclSyntax.codableVariable(enumCaseDeclSyntaxes: enumCaseDeclSyntaxes, caseType: caseType)
         }
         
         return [
@@ -106,29 +44,155 @@ public struct ERPenumMacro: ExtensionMacro, MemberMacro {
         of node: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
-    ) throws -> [DeclSyntax] {
-        guard let enumDecl = declaration.as(EnumDeclSyntax.self) else {
-            //TODO: Emit an error here
-            return []
-        }
+    ) throws -> [SwiftSyntax.DeclSyntax] {
         return []
     }
 }
 
-enum ERPcaseMacro: PeerMacro {
-    static func expansion(
+public struct ERPcaseMacro: PeerMacro {
+    
+    public static func expansion(
         of node: AttributeSyntax,
         providingPeersOf declaration: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
-    ) throws -> [DeclSyntax] {
+    ) throws -> [SwiftSyntax.DeclSyntax] {
         []
+    }
+}
+
+public struct ERPCodableMacro: ExtensionMacro, MemberMacro {
+    
+    public static func expansion(
+        of node: AttributeSyntax,
+        attachedTo declaration: some DeclGroupSyntax,
+        providingExtensionsOf type: some TypeSyntaxProtocol,
+        conformingTo protocols: [TypeSyntax],
+        in context: some MacroExpansionContext
+    ) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
+        if let classDecl = declaration.as(ClassDeclSyntax.self) {
+            let variableDeclSyntaxes = classDecl.memberBlock.members.compactMap({ $0.decl.as(VariableDeclSyntax.self) })
+            
+            let idCodableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): Codable") {
+                try DeclSyntax.codingKeysEnum(variableDeclSyntaxes: variableDeclSyntaxes)
+            }
+            
+            return [
+                idCodableExtension
+            ]
+        } else if let structDecl = declaration.as(StructDeclSyntax.self) {
+            let variableDeclSyntaxes = structDecl.memberBlock.members.compactMap({ $0.decl.as(VariableDeclSyntax.self) })
+            
+            let idCodableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): Codable") {
+                try DeclSyntax.codingKeysEnum(variableDeclSyntaxes: variableDeclSyntaxes)
+            }
+            
+            return [
+                idCodableExtension
+            ]
+        } else {
+            throw Error.notAClassOrStruct
+        }
+    }
+    
+    public static func expansion(
+        of node: AttributeSyntax,
+        providingMembersOf declaration: some DeclGroupSyntax,
+        in context: some MacroExpansionContext
+    ) throws -> [SwiftSyntax.DeclSyntax] {
+        guard let classDecl = declaration.as(ClassDeclSyntax.self) else {
+            //TODO: Emit an error here
+            return []
+        }
+        let variableDeclSyntaxes = classDecl.memberBlock.members.compactMap({ $0.decl.as(VariableDeclSyntax.self) })
+        
+        var variables: [String]? = nil
+        for variableDeclSyntax in variableDeclSyntaxes {
+            if let identifier = variableDeclSyntax.patrnNameIdentifier {
+                
+                if variableDeclSyntax.erpEnum {
+                    var newVariables: [String] = variables ?? []
+                    newVariables.append("private(set) var \(identifier)Id: String")
+                    variables = newVariables
+                    
+                    if let codableType = variableDeclSyntax.erpEnumCodableType {
+                        var newVariables: [String] = variables ?? []
+                        newVariables.append("private(set) var \(identifier)Codable: \(codableType)")
+                        variables = newVariables
+                    }
+                }
+            }
+        }
+        
+        let initializer = try DeclSyntax.initializer(variableDeclSyntaxes: variableDeclSyntaxes)
+        let decodeInitializer = try DeclSyntax.decodeInitializer(variableDeclSyntaxes: variableDeclSyntaxes)
+        
+        if let variables, !variables.isEmpty {
+            return [
+                SwiftSyntax.DeclSyntax(stringLiteral: variables.joined(separator: "\n")),
+                SwiftSyntax.DeclSyntax(initializer),
+                SwiftSyntax.DeclSyntax(decodeInitializer)
+            ]
+        } else {
+            return [
+                SwiftSyntax.DeclSyntax(initializer),
+                SwiftSyntax.DeclSyntax(decodeInitializer)
+            ]
+        }
+    }
+}
+
+public struct ERPEnumMacro: AccessorMacro {
+    
+    public static func expansion(
+        of node: AttributeSyntax,
+        providingAccessorsOf declaration: some DeclSyntaxProtocol,
+        in context: some MacroExpansionContext
+    ) throws -> [AccessorDeclSyntax] {
+        guard let variableDeclSyntax = declaration.as(VariableDeclSyntax.self),
+              let identifier = variableDeclSyntax.patrnNameIdentifier,
+              let type = variableDeclSyntax.patrnType else {
+            return []
+        }
+        
+        if variableDeclSyntax.erpEnumCodable {
+            return [
+                AccessorDeclSyntax(stringLiteral: """
+                 get {
+                    try! \(type)(id: \(identifier)Id)
+                 }
+                 """),
+                AccessorDeclSyntax(stringLiteral: """
+                 set {
+                 self.\(identifier)Id = newValue.id
+                 self.\(identifier)Codable = newValue.codable
+                 }
+                 """)
+            ]
+        } else {
+            return [
+                AccessorDeclSyntax(stringLiteral: """
+                 get {
+                    try! \(type)(id: \(identifier)Id)
+                 }
+                 """),
+                AccessorDeclSyntax(stringLiteral: """
+                 set {
+                 self.\(identifier)Id = newValue.id
+                 }
+                 """)
+            ]
+        }
     }
 }
 
 @main
 struct IDCodablePlugin: CompilerPlugin {
+    
     let providingMacros: [Macro.Type] = [
         ERPenumMacro.self,
-        ERPcaseMacro.self
+        ERPcaseMacro.self,
+        
+        ERPCodableMacro.self,
+        ERPEnumMacro.self
     ]
 }
