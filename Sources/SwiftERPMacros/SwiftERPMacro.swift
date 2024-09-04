@@ -172,8 +172,8 @@ public struct ERPEnumMacro: AccessorMacro {
                  """),
                 AccessorDeclSyntax(stringLiteral: """
                  set {
-                 self.\(identifier)Id = newValue.id
-                 self.\(identifier)Codable = newValue.codable
+                 \(identifier)Id = newValue.id
+                 \(identifier)Codable = newValue.codable
                  }
                  """)
             ]
@@ -186,7 +186,7 @@ public struct ERPEnumMacro: AccessorMacro {
                  """),
                 AccessorDeclSyntax(stringLiteral: """
                  set {
-                 self.\(identifier)Id = newValue.id
+                 \(identifier)Id = newValue.id
                  }
                  """)
             ]

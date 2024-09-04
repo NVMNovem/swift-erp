@@ -180,8 +180,8 @@ final class SwiftERPTests: XCTestCase {
                        try! Itemgroup(id: itemgroupId)
                     }
                     set {
-                        self.itemgroupId = newValue.id
-                        self.itemgroupCodable = newValue.codable
+                        itemgroupId = newValue.id
+                        itemgroupCodable = newValue.codable
                     }
                 }
                 var status: Status {
@@ -189,8 +189,8 @@ final class SwiftERPTests: XCTestCase {
                        try! Status(id: statusId)
                     }
                     set {
-                        self.statusId = newValue.id
-                        self.statusCodable = newValue.codable
+                        statusId = newValue.id
+                        statusCodable = newValue.codable
                     }
                 }
                 var name: String?
