@@ -183,26 +183,43 @@ public struct ERPEnumMacro: AccessorMacro {
                  """)
         }
         
-        if variableDeclSyntax.erpEnumCodable {
-            return [
-                getAccessorDeclSyntax,
-                AccessorDeclSyntax(stringLiteral: """
+        let setAccessorDeclSyntax: AccessorDeclSyntax
+        if variableDeclSyntax.patrnIsOptionalType {
+            if variableDeclSyntax.erpEnumCodable {
+                setAccessorDeclSyntax = AccessorDeclSyntax(stringLiteral: """
                  set {
-                 \(identifier)Id = newValue.id
-                 \(identifier)Codable = newValue.codable
+                    \(identifier)Id = newValue?.id
+                    \(identifier)Codable = newValue?.codable
                  }
                  """)
-            ]
+            } else {
+                setAccessorDeclSyntax = AccessorDeclSyntax(stringLiteral: """
+                 set {
+                    \(identifier)Id = newValue?.id
+                 }
+                 """)
+            }
         } else {
-            return [
-                getAccessorDeclSyntax,
-                AccessorDeclSyntax(stringLiteral: """
+            if variableDeclSyntax.erpEnumCodable {
+                setAccessorDeclSyntax = AccessorDeclSyntax(stringLiteral: """
                  set {
-                 \(identifier)Id = newValue.id
+                    \(identifier)Id = newValue.id
+                    \(identifier)Codable = newValue.codable
                  }
                  """)
-            ]
+            } else {
+                setAccessorDeclSyntax = AccessorDeclSyntax(stringLiteral: """
+                 set {
+                    \(identifier)Id = newValue.id
+                 }
+                 """)
+            }
         }
+        
+        return [
+            getAccessorDeclSyntax,
+            setAccessorDeclSyntax
+        ]
     }
 }
 
