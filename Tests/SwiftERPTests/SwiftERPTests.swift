@@ -161,7 +161,7 @@ final class SwiftERPTests: XCTestCase {
             
                 var po: String
                 var article: String
-                @ERPEnum(String.self) var itemgroup: Itemgroup
+                @ERPEnum(String.self) var itemgroup: Itemgroup?
                 @ERPEnum(Int.self) var status: Status
                 var name: String?
             }
@@ -175,9 +175,9 @@ final class SwiftERPTests: XCTestCase {
             
                 var po: String
                 var article: String
-                var itemgroup: Itemgroup {
+                var itemgroup: Itemgroup? {
                     get {
-                       try! Itemgroup(id: itemgroupId)
+                       try? Itemgroup(id: itemgroupId)
                     }
                     set {
                         itemgroupId = newValue.id
@@ -200,7 +200,7 @@ final class SwiftERPTests: XCTestCase {
                 private(set) var statusId: String
                 private(set) var statusCodable: Int
             
-                init(po: String, article: String, itemgroup: Itemgroup, status: Status, name: String?) {
+                init(po: String, article: String, itemgroup: Itemgroup?, status: Status, name: String?) {
                     self.po = po
                     self.article = article
                     self.itemgroupId = itemgroup.id
@@ -215,8 +215,8 @@ final class SwiftERPTests: XCTestCase {
             
                     po = try values.decode(String.self, forKey: .po)
                     article = try values.decode(String.self, forKey: .article)
-                    itemgroupId = try values.decode(String.self, forKey: .itemgroupId)
-                itemgroupCodable = try values.decode(String.self, forKey: .itemgroupCodable)
+                    itemgroupId = try values.decodeIfPresent(String.self, forKey: .itemgroupId)
+                itemgroupCodable = try values.decodeIfPresent(String.self, forKey: .itemgroupCodable)
                     statusId = try values.decode(String.self, forKey: .statusId)
                 statusCodable = try values.decode(Int.self, forKey: .statusCodable)
                     name = try values.decodeIfPresent(String.self, forKey: .name)
@@ -227,8 +227,8 @@ final class SwiftERPTests: XCTestCase {
             
                     try container.encode(po, forKey: .po)
                     try container.encode(article, forKey: .article)
-                    try container.encode(itemgroupId, forKey: .itemgroupId)
-                try container.encode(itemgroupCodable, forKey: .itemgroupCodable)
+                    try container.encodeIfPresent(itemgroupId, forKey: .itemgroupId)
+                try container.encodeIfPresent(itemgroupCodable, forKey: .itemgroupCodable)
                     try container.encode(statusId, forKey: .statusId)
                 try container.encode(statusCodable, forKey: .statusCodable)
                     try container.encodeIfPresent(name, forKey: .name)
