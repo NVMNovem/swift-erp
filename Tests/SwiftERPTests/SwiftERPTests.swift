@@ -215,6 +215,18 @@ final class SwiftERPTests: XCTestCase {
                 statusCodable = try values.decode(Int.self, forKey: .statusCodable)
                     name = try values.decodeIfPresent(String.self, forKey: .name)
                 }
+            
+                func encode(to encoder: Encoder) throws {
+                    var container = encoder.container(keyedBy: ERPCodingKeys.self)
+            
+                    try container.encode(po, forKey: .po)
+                    try container.encode(article, forKey: .article)
+                    try container.encode(itemgroupId, forKey: .itemgroupId)
+                try container.encode(itemgroupCodable, forKey: .itemgroupCodable)
+                    try container.encode(statusId, forKey: .statusId)
+                try container.encode(statusCodable, forKey: .statusCodable)
+                    try container.encodeIfPresent(name, forKey: .name)
+                }
             }
             
             extension ProductionOrder: Codable {

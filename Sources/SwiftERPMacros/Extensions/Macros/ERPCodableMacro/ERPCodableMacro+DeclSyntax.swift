@@ -100,5 +100,38 @@ extension ERPCodableMacro {
                 }
             }
         }
+        
+        static func encodeFunction(variableDeclSyntaxes: [VariableDeclSyntax]) throws -> FunctionDeclSyntax {
+            try FunctionDeclSyntax("func encode(to encoder: Encoder) throws") {
+                """
+                var container = encoder.container(keyedBy: ERPCodingKeys.self)
+                \n
+                """
+                for varDecl in variableDeclSyntaxes {
+                    let encodeType = varDecl.patrnIsOptionalType ? "encodeIfPresent" : "encode"
+                    
+                    if varDecl.erpEnum {
+                        if let identifier = varDecl.patrnNameIdentifier {
+                            if varDecl.erpEnumCodable {
+                                """
+                                try container.\(raw: encodeType)(\(identifier)Id, forKey: .\(identifier)Id)
+                                try container.\(raw: encodeType)(\(identifier)Codable, forKey: .\(identifier)Codable)
+                                """
+                            } else {
+                                """
+                                try container.\(raw: encodeType)(\(identifier)Id, forKey: .\(identifier)Id)
+                                """
+                            }
+                        }
+                    } else {
+                        if let identifier = varDecl.patrnNameIdentifier {
+                            """
+                            try container.\(raw: encodeType)(\(identifier), forKey: .\(identifier))
+                            """
+                        }
+                    }
+                }
+            }
+        }
     }
 }

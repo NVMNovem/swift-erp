@@ -125,17 +125,20 @@ public struct ERPCodableMacro: ExtensionMacro, MemberMacro {
         
         let initializer = try DeclSyntax.initializer(variableDeclSyntaxes: variableDeclSyntaxes)
         let decodeInitializer = try DeclSyntax.decodeInitializer(variableDeclSyntaxes: variableDeclSyntaxes)
+        let encodeFunction = try DeclSyntax.encodeFunction(variableDeclSyntaxes: variableDeclSyntaxes)
         
         if let variables, !variables.isEmpty {
             return [
                 SwiftSyntax.DeclSyntax(stringLiteral: variables.joined(separator: "\n")),
                 SwiftSyntax.DeclSyntax(initializer),
-                SwiftSyntax.DeclSyntax(decodeInitializer)
+                SwiftSyntax.DeclSyntax(decodeInitializer),
+                SwiftSyntax.DeclSyntax(encodeFunction)
             ]
         } else {
             return [
                 SwiftSyntax.DeclSyntax(initializer),
-                SwiftSyntax.DeclSyntax(decodeInitializer)
+                SwiftSyntax.DeclSyntax(decodeInitializer),
+                SwiftSyntax.DeclSyntax(encodeFunction)
             ]
         }
     }
