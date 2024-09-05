@@ -58,11 +58,14 @@ extension ERPCodableMacro {
                                 self.\(identifier)Id = \(identifier)\(raw: optDecl).id
                                 """
                             }
-                        } else {
-                            """
-                            self.\(identifier) = \(identifier)
-                            """
                         }
+                    }
+                }
+                for varDecl in variableDeclSyntaxes {
+                    if let identifier = varDecl.patrnNameIdentifier {
+                        """
+                        self.\(identifier) = \(identifier)
+                        """
                     }
                 }
             }
