@@ -115,12 +115,12 @@ extension ERPCodableMacro {
                         if let identifier = varDecl.patrnNameIdentifier {
                             if varDecl.erpEnumCodable {
                                 """
-                                try container.\(raw: encodeType)(\(identifier)Id, forKey: .\(identifier)Id)
-                                try container.\(raw: encodeType)(\(identifier)Codable, forKey: .\(identifier)Codable)
+                                try container.\(raw: encodeType)(\(identifier).id, forKey: .\(identifier)Id)
+                                try container.\(raw: encodeType)(\(identifier).codable, forKey: .\(identifier)Codable)
                                 """
                             } else {
                                 """
-                                try container.\(raw: encodeType)(\(identifier)Id, forKey: .\(identifier)Id)
+                                try container.\(raw: encodeType)(\(identifier).id, forKey: .\(identifier)Id)
                                 """
                             }
                         }
