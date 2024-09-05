@@ -110,17 +110,18 @@ extension ERPCodableMacro {
                 """
                 for varDecl in variableDeclSyntaxes {
                     let encodeType = varDecl.patrnIsOptionalType ? "encodeIfPresent" : "encode"
+                    let optDecl = varDecl.patrnIsOptionalType ? "?" : ""
                     
                     if varDecl.erpEnum {
                         if let identifier = varDecl.patrnNameIdentifier {
                             if varDecl.erpEnumCodable {
                                 """
-                                try container.\(raw: encodeType)(\(identifier).id, forKey: .\(identifier)Id)
-                                try container.\(raw: encodeType)(\(identifier).codable, forKey: .\(identifier)Codable)
+                                try container.\(raw: encodeType)(\(identifier)\(raw: optDecl).id, forKey: .\(identifier)Id)
+                                try container.\(raw: encodeType)(\(identifier)\(raw: optDecl).codable, forKey: .\(identifier)Codable)
                                 """
                             } else {
                                 """
-                                try container.\(raw: encodeType)(\(identifier).id, forKey: .\(identifier)Id)
+                                try container.\(raw: encodeType)(\(identifier)\(raw: optDecl).id, forKey: .\(identifier)Id)
                                 """
                             }
                         }
