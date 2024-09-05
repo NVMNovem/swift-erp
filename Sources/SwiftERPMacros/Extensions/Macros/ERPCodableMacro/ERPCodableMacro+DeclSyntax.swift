@@ -50,12 +50,12 @@ extension ERPCodableMacro {
                         if varDecl.erpEnum {
                             if varDecl.erpEnumCodable {
                                 """
-                                self.\(identifier)Id = \(identifier)\(raw: optDecl).id
-                                self.\(identifier)Codable = \(identifier)\(raw: optDecl).codable
+                                \(identifier)Id = \(identifier)\(raw: optDecl).id
+                                \(identifier)Codable = \(identifier)\(raw: optDecl).codable
                                 """
                             } else {
                                 """
-                                self.\(identifier)Id = \(identifier)\(raw: optDecl).id
+                                \(identifier)Id = \(identifier)\(raw: optDecl).id
                                 """
                             }
                         }
@@ -64,7 +64,7 @@ extension ERPCodableMacro {
                 for varDecl in variableDeclSyntaxes {
                     if let identifier = varDecl.patrnNameIdentifier {
                         """
-                        self.\(identifier) = \(identifier)
+                        \(identifier) = \(identifier)
                         """
                     }
                 }

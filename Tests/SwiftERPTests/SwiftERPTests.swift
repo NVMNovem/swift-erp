@@ -204,15 +204,15 @@ final class SwiftERPTests: XCTestCase {
                 private(set) var statusCodable: Int
             
                 init(po: String, article: String, itemgroup: Itemgroup?, status: Status, name: String?) {
-                    self.itemgroupId = itemgroup?.id
-                self.itemgroupCodable = itemgroup?.codable
-                    self.statusId = status.id
-                self.statusCodable = status.codable
-                    self.po = po
-                    self.article = article
-                    self.itemgroup = itemgroup
-                    self.status = status
-                    self.name = name
+                    itemgroupId = itemgroup?.id
+                itemgroupCodable = itemgroup?.codable
+                    statusId = status.id
+                statusCodable = status.codable
+                    po = po
+                    article = article
+                    itemgroup = itemgroup
+                    status = status
+                    name = name
                 }
             
                 init(from decoder: Decoder) throws {
