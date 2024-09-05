@@ -245,10 +245,10 @@ final class SwiftERPTests: XCTestCase {
                     case po = "po"
                     case article = "article"
                     case itemgroup = "itemgroup"
-                    case itemgroupId = "erp_itemgroupId"
+                    case itemgroupId = "_itemgroup"
                     case itemgroupCodable = "erp_itemgroupCodable"
                     case status = "status"
-                    case statusId = "erp_statusId"
+                    case statusId = "_status"
                     case statusCodable = "erp_statusCodable"
                     case name = "name"
                 }

@@ -18,13 +18,13 @@ extension ERPCodableMacro {
                             if varDecl.erpEnumCodable {
                                 """
                                 case \(identifier) = "\(identifier)"
-                                case \(identifier)Id = "erp_\(identifier)Id"
+                                case \(identifier)Id = "_\(identifier)"
                                 case \(identifier)Codable = "erp_\(identifier)Codable"
                                 """
                             } else {
                                 """
                                 case \(identifier) = "\(identifier)"
-                                case \(identifier)Id = "erp_\(identifier)Id"
+                                case \(identifier)Id = "_\(identifier)"
                                 """
                             }
                         } else {
