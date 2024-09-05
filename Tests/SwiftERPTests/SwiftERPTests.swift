@@ -232,10 +232,10 @@ final class SwiftERPTests: XCTestCase {
             
                     try container.encode(po, forKey: .po)
                     try container.encode(article, forKey: .article)
-                    try container.encodeIfPresent(itemgroup?.id, forKey: .itemgroupId)
-                try container.encodeIfPresent(itemgroup?.codable, forKey: .itemgroupCodable)
-                    try container.encode(status.id, forKey: .statusId)
-                try container.encode(status.codable, forKey: .statusCodable)
+                    try container.encodeIfPresent(itemgroupId, forKey: .itemgroupId)
+                try container.encodeIfPresent(itemgroupCodable, forKey: .itemgroupCodable)
+                    try container.encode(statusId, forKey: .statusId)
+                try container.encode(statusCodable, forKey: .statusCodable)
                     try container.encodeIfPresent(name, forKey: .name)
                 }
             }
