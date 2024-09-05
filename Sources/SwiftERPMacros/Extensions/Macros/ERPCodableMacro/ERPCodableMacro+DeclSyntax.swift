@@ -18,13 +18,13 @@ extension ERPCodableMacro {
                             if varDecl.erpEnumCodable {
                                 """
                                 case \(identifier) = "\(identifier)"
-                                case \(identifier)Id = "_\(identifier)"
+                                case \(identifier)Id = "erp_\(identifier)Id"
                                 case \(identifier)Codable = "erp_\(identifier)Codable"
                                 """
                             } else {
                                 """
                                 case \(identifier) = "\(identifier)"
-                                case \(identifier)Id = "_\(identifier)"
+                                case \(identifier)Id = "erp_\(identifier)Id"
                                 """
                             }
                         } else {
@@ -64,7 +64,7 @@ extension ERPCodableMacro {
                 for varDecl in variableDeclSyntaxes {
                     if let identifier = varDecl.patrnNameIdentifier {
                         """
-                        \(identifier) = \(identifier)
+                        self.\(identifier) = \(identifier)
                         """
                     }
                 }

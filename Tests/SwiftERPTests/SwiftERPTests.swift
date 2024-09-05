@@ -208,11 +208,11 @@ final class SwiftERPTests: XCTestCase {
                 itemgroupCodable = itemgroup?.codable
                     statusId = status.id
                 statusCodable = status.codable
-                    po = po
-                    article = article
-                    itemgroup = itemgroup
-                    status = status
-                    name = name
+                    self.po = po
+                    self.article = article
+                    self.itemgroup = itemgroup
+                    self.status = status
+                    self.name = name
                 }
             
                 init(from decoder: Decoder) throws {
@@ -245,10 +245,10 @@ final class SwiftERPTests: XCTestCase {
                     case po = "po"
                     case article = "article"
                     case itemgroup = "itemgroup"
-                    case itemgroupId = "_itemgroup"
+                    case itemgroupId = "erp_itemgroupId"
                     case itemgroupCodable = "erp_itemgroupCodable"
                     case status = "status"
-                    case statusId = "_status"
+                    case statusId = "erp_statusId"
                     case statusCodable = "erp_statusCodable"
                     case name = "name"
                 }
