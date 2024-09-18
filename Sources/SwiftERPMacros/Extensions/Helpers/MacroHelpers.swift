@@ -81,6 +81,10 @@ internal extension VariableDeclSyntax {
     }
     
     var isGetSet: Bool {
-        return self.bindings.filter({ $0.accessorBlock != nil }).isEmpty
+        return self.bindings.contains(where: { $0.accessorBlock == nil })
+    }
+    
+    var isStatic: Bool {
+        return self.modifiers.contains(where: { $0.name.tokenKind == .keyword(.static) })
     }
 }

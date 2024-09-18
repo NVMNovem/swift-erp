@@ -74,12 +74,12 @@ public struct ERPCodableMacro: ExtensionMacro, MemberMacro {
         case let classDecl as ClassDeclSyntax:
             variableDeclSyntaxes = classDecl.memberBlock.members
                 .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
-                .filter({ $0.isGetSet })
+                .filter({ $0.isGetSet && !$0.isStatic })
             
         case let structDecl as StructDeclSyntax:
             variableDeclSyntaxes = structDecl.memberBlock.members
                 .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
-                .filter({ $0.isGetSet })
+                .filter({ $0.isGetSet && !$0.isStatic })
         default:
             return []
         }
@@ -103,12 +103,12 @@ public struct ERPCodableMacro: ExtensionMacro, MemberMacro {
         case let classDecl as ClassDeclSyntax:
             variableDeclSyntaxes = classDecl.memberBlock.members
                 .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
-                .filter({ $0.isGetSet })
+                .filter({ $0.isGetSet && !$0.isStatic })
             
         case let structDecl as StructDeclSyntax:
             variableDeclSyntaxes = structDecl.memberBlock.members
                 .compactMap({ $0.decl.as(VariableDeclSyntax.self) })
-                .filter({ $0.isGetSet })
+                .filter({ $0.isGetSet && !$0.isStatic })
         default:
             context.diagnose(Diagnose.notAClassOrStruct.diagnostic(node: node, from: declaration))
             return []

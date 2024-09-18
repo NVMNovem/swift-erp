@@ -50,12 +50,12 @@ extension ERPCodableMacro {
                         if varDecl.erpEnum {
                             if varDecl.erpEnumCodable {
                                 """
-                                \(identifier)Id = \(identifier)\(raw: optDecl).id
-                                \(identifier)Codable = \(identifier)\(raw: optDecl).codable
+                                self.\(identifier)Id = \(identifier)\(raw: optDecl).id
+                                self.\(identifier)Codable = \(identifier)\(raw: optDecl).codable
                                 """
                             } else {
                                 """
-                                \(identifier)Id = \(identifier)\(raw: optDecl).id
+                                self.\(identifier)Id = \(identifier)\(raw: optDecl).id
                                 """
                             }
                         }

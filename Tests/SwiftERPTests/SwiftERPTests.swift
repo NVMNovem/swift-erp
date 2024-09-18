@@ -204,10 +204,10 @@ final class SwiftERPTests: XCTestCase {
                 private(set) var statusCodable: Int
             
                 init(po: String, article: String, itemgroup: Itemgroup?, status: Status, name: String?) {
-                    itemgroupId = itemgroup?.id
-                itemgroupCodable = itemgroup?.codable
-                    statusId = status.id
-                statusCodable = status.codable
+                    self.itemgroupId = itemgroup?.id
+                self.itemgroupCodable = itemgroup?.codable
+                    self.statusId = status.id
+                self.statusCodable = status.codable
                     self.po = po
                     self.article = article
                     self.itemgroup = itemgroup
