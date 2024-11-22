@@ -45,7 +45,7 @@ final class SwiftERPTests: XCTestCase {
                     case "OA1G29Y2D5":
                         self = .TEST_2
                     default:
-                        throw ERPEnumError.invalidId
+                        throw ERPEnumError.invalidId(id)
                     }
                 }
                 var id: String {
@@ -63,7 +63,7 @@ final class SwiftERPTests: XCTestCase {
                     case "Test 2":
                         self = .TEST_2
                     default:
-                        throw ERPEnumError.invalidCodable
+                        throw ERPEnumError.invalidCodable(codable)
                     }
                 }
                 var codable: String {
@@ -111,7 +111,7 @@ final class SwiftERPTests: XCTestCase {
                     case "DJX3SZZVCN":
                         self = .started
                     default:
-                        throw ERPEnumError.invalidId
+                        throw ERPEnumError.invalidId(id)
                     }
                 }
                 var id: String {
@@ -129,7 +129,7 @@ final class SwiftERPTests: XCTestCase {
                     case 2:
                         self = .started
                     default:
-                        throw ERPEnumError.invalidCodable
+                        throw ERPEnumError.invalidCodable(codable)
                     }
                 }
                 var codable: Int {

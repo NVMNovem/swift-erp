@@ -7,9 +7,9 @@
 
 import Foundation
 
-public enum ERPEnumError: Error {
-    case invalidId
-    case invalidCodable
+public enum ERPEnumError<CodableType: Codable & Equatable & CustomStringConvertible & Sendable>: Error {
+    case invalidId(_ id: CodableType)
+    case invalidCodable(_ codable: CodableType)
 }
 
 extension ERPEnumError: LocalizedError {
@@ -25,14 +25,14 @@ extension ERPEnumError: LocalizedError {
     
     public var errorDescription: String? {
         switch self {
-        case .invalidId:
+        case .invalidId(let id):
             return String(
-                localized: "The id is invalid for this enum.",
+                localized: "The id '\(id.description)' is invalid for this enum.",
                 table: "FSError"
             )
-        case .invalidCodable:
+        case .invalidCodable(let codable):
             return String(
-                localized: "The codable is invalid for this enum.",
+                localized: "The codable '\(codable.description)' is invalid for this enum.",
                 table: "FSError"
             )
         }
