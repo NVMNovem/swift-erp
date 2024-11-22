@@ -24,7 +24,7 @@ extension ERPenumMacro {
                         }
                     }
                 """
-                default: throw ERPEnumError.invalidId(id)
+                default: throw ERPEnumError.invalidId(id, erpEnum: Self.self)
                 """
                 }
             }
@@ -61,7 +61,7 @@ extension ERPenumMacro {
                         }
                     }
                 """
-                default: throw ERPEnumError.invalidCodable(codable)
+                default: throw ERPEnumError.invalidCodable(codable, erpEnum: Self.self)
                 """
                 }
             }
