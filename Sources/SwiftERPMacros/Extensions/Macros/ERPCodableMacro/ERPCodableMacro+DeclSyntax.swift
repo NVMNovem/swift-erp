@@ -12,7 +12,7 @@ extension ERPCodableMacro {
     enum DeclSyntax {
         static func codingKeysEnum(variableDeclSyntaxes: [VariableDeclSyntax]) throws -> EnumDeclSyntax {
             try EnumDeclSyntax("fileprivate enum ERPCodingKeys: String, CodingKey") {
-                for varDecl in variableDeclSyntaxes {
+                for varDecl in variableDeclSyntaxes.filter({ $0.patrnInitializer == nil }) {
                     if let identifier = varDecl.patrnNameIdentifier?.identifier {
                         if varDecl.erpEnum {
                             if varDecl.erpEnumCodable {
@@ -38,6 +38,8 @@ extension ERPCodableMacro {
         }
         
         static func initializer(variableDeclSyntaxes: [VariableDeclSyntax]) throws -> InitializerDeclSyntax {
+            let variableDeclSyntaxes = variableDeclSyntaxes.filter({ $0.patrnInitializer == nil })
+            
             let parameters = variableDeclSyntaxes.compactMap({ decl -> String? in
                 guard let name = decl.patrnNameIdentifier, let type = decl.patrnType else { return nil }
                 return "\(name): \(type)"
@@ -77,7 +79,7 @@ extension ERPCodableMacro {
                 let values = try decoder.container(keyedBy: ERPCodingKeys.self)
                 \n
                 """
-                for varDecl in variableDeclSyntaxes {
+                for varDecl in variableDeclSyntaxes.filter({ $0.patrnInitializer == nil }) {
                     let decodeType = varDecl.patrnIsOptionalType ? "decodeIfPresent" : "decode"
                     
                     if varDecl.erpEnum {
@@ -111,7 +113,7 @@ extension ERPCodableMacro {
                 var container = encoder.container(keyedBy: ERPCodingKeys.self)
                 \n
                 """
-                for varDecl in variableDeclSyntaxes {
+                for varDecl in variableDeclSyntaxes.filter({ $0.patrnInitializer == nil }) {
                     let encodeType = varDecl.patrnIsOptionalType ? "encodeIfPresent" : "encode"
                     
                     if varDecl.erpEnum {

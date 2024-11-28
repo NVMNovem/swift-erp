@@ -159,6 +159,8 @@ final class SwiftERPTests: XCTestCase {
                 typealias SortValue = Article
                 var sortValue: SortValue { return self.article }
             
+                let id: UUID = UUID()
+            
                 var po: String
                 var article: String
                 @ERPEnum(String.self) var itemgroup: Itemgroup?
@@ -172,6 +174,8 @@ final class SwiftERPTests: XCTestCase {
             
                 typealias SortValue = Article
                 var sortValue: SortValue { return self.article }
+            
+                let id: UUID = UUID()
             
                 var po: String
                 var article: String

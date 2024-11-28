@@ -1,3 +1,4 @@
+import Foundation
 import SwiftERP
 
 @ERPenum
@@ -16,6 +17,8 @@ enum Status {
 
 @ERPCodable
 final class ProductionOrder {
+    
+    let id: UUID = UUID()
     
     var po: String
     var article: String

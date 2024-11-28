@@ -73,11 +73,15 @@ internal extension VariableDeclSyntax {
     }
     
     var patrnType: TypeSyntax? {
-        return self.patrn?.typeAnnotation?.type
+        return self.patrn?.typeAnnotation?.type.trimmed
     }
     
     var patrnIsOptionalType: Bool {
         return self.patrnType?.as(OptionalTypeSyntax.self) != nil
+    }
+    
+    var patrnInitializer: InitializerClauseSyntax? {
+        return self.patrn?.initializer?.trimmed
     }
     
     var isGetSet: Bool {
