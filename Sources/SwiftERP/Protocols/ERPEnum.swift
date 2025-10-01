@@ -30,6 +30,9 @@ public protocol ERPEnum: RawRepresentable<String>, Codable, Identifiable<String>
     
     var id: String { get }
     var codable: CodableType { get }
+    
+    var rawValue: String { get }
+    init?(rawValue: String)
 }
 
 public extension ERPEnum {

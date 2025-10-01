@@ -5,7 +5,10 @@
 //  Created by Damian Van de Kauter on 01/09/2024.
 //
 
-@attached(extension, conformances: ERPEnum, names: named(CodableType), named(init), named(id), named(codable))
+@attached(extension,
+          conformances: ERPEnum, RawRepresentable<String>, Codable, Identifiable<String>, Hashable,
+          names: named(CodableType), named(init), named(id), named(codable)
+)
 @attached(member, names: arbitrary)
 public macro ERPenum() = #externalMacro(
     module: "SwiftERPMacros",
