@@ -27,7 +27,7 @@ public struct ERPenumMacro: ExtensionMacro, MemberMacro {
             return []
         }
         
-        let idCodableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): ERPEnum") {
+        let idCodableExtension = try ExtensionDeclSyntax("extension \(type.trimmed): ERPEnum, RawRepresentable, Codable, Identifiable, Hashable") {
             try TypeAliasDeclSyntax("typealias CodableType = \(raw: caseType)")
             try DeclSyntax.idInitializer(enumCaseDeclSyntaxes: enumCaseDeclSyntaxes)
             try DeclSyntax.idVariable(enumCaseDeclSyntaxes: enumCaseDeclSyntaxes)
