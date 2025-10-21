@@ -2,6 +2,9 @@
 
 <h3 align="center">iOS · macOS · watchOS · tvOS · visionOS</h3>
 
+
+![macOS](https://github.com/NVMNovem/swift-erp/actions/workflows/Swift.yml/badge.svg)
+
 ---
 
 A pure Swift macro that allows you to easily set an ID and a Codable value.
