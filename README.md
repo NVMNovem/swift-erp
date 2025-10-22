@@ -1,6 +1,6 @@
 ![SwiftERP_header](https://github.com/user-attachments/assets/724b6952-4b04-4413-b24e-27a099cbff6a)
 
-![macOS](https://github.com/NVMNovem/swift-erp/actions/workflows/swift.yml/badge.svg)
+![macOS](https://github.com/NVMNovem/swift-erp/actions/workflows/macOS_build.yml/badge.svg)
 
 ---
 
