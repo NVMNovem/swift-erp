@@ -4,21 +4,25 @@ import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
-// Macro implementations build for the host, so the corresponding module is not available when cross-compiling. Cross-compiled tests may still make use of the macro itself in end-to-end tests.
+// Macro implementations build for the host, so the corresponding module is not available when cross-compiling.
+// Cross-compiled tests may still make use of the macro itself in end-to-end tests.
 #if canImport(SwiftERPMacros)
 import SwiftERPMacros
 
-let testMacros: [String: Macro.Type] = [
-    "ERPenum": ERPenumMacro.self,
+enum SwiftERPMacro {
     
-    "ERPCodable": ERPCodableMacro.self,
-    "ERPEnum": ERPEnumMacro.self
-]
+    nonisolated(unsafe) static let testMacros: [String: Macro.Type] = [
+        "ERPenum": ERPenumMacro.self,
+        
+        "ERPCodable": ERPCodableMacro.self,
+        "ERPEnum": ERPEnumMacro.self
+    ]
+}
 #endif
 
 final class SwiftERPTests: XCTestCase {
     func testERPenum1() throws {
-#if canImport(SwiftERPMacros)
+        #if canImport(SwiftERPMacros)
         assertMacroExpansion(
             """
             @ERPenum
@@ -36,7 +40,7 @@ final class SwiftERPTests: XCTestCase {
                 @ERPcase(id: "OA1G29Y2D5", codable: "Test 2") case TEST_2
             }
             
-            extension Itemgroup: ERPEnum {
+            extension Itemgroup: ERPEnum, RawRepresentable, Codable, Identifiable, Hashable {
                 typealias CodableType = String
                 init(id: String) throws {
                     switch id {
@@ -76,15 +80,15 @@ final class SwiftERPTests: XCTestCase {
                 }
             }
             """,
-            macros: testMacros
+            macros: SwiftERPMacro.testMacros
         )
-#else
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
-#endif
+        #endif
     }
     
     func testERPenum2() throws {
-#if canImport(SwiftERPMacros)
+        #if canImport(SwiftERPMacros)
         assertMacroExpansion(
             """
             @ERPenum
@@ -102,7 +106,7 @@ final class SwiftERPTests: XCTestCase {
                 @ERPcase(id: "DJX3SZZVCN", codable: 2) case started
             }
             
-            extension Status: ERPEnum {
+            extension Status: ERPEnum, RawRepresentable, Codable, Identifiable, Hashable {
                 typealias CodableType = Int
                 init(id: String) throws {
                     switch id {
@@ -142,15 +146,15 @@ final class SwiftERPTests: XCTestCase {
                 }
             }
             """,
-            macros: testMacros
+            macros: SwiftERPMacro.testMacros
         )
-#else
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
-#endif
+        #endif
     }
     
     func testERPCodable1() throws {
-#if canImport(SwiftERPMacros)
+        #if canImport(SwiftERPMacros)
         assertMacroExpansion(
             """
             @ERPCodable
@@ -258,10 +262,10 @@ final class SwiftERPTests: XCTestCase {
                 }
             }
             """,
-            macros: testMacros
+            macros: SwiftERPMacro.testMacros
         )
-#else
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
-#endif
+        #endif
     }
 }
