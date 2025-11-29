@@ -1,4 +1,8 @@
-![SwiftERP_header](https://github.com/user-attachments/assets/724b6952-4b04-4413-b24e-27a099cbff6a)
+<picture>
+  <source srcset="https://github.com/user-attachments/assets/0496bf23-2af4-418e-8abe-7eae6851039d" media="(prefers-color-scheme: light)"/>
+  <source srcset="https://github.com/user-attachments/assets/85a26178-cbbf-4326-8697-25a6e82e3dfb"  media="(prefers-color-scheme: dark)"/>
+  <img src="https://github.com/user-attachments/assets/0496bf23-2af4-418e-8abe-7eae6851039d" alt="SwiftERP"/>
+</picture>
 
 ![macOS](https://github.com/NVMNovem/swift-erp/actions/workflows/macOS_build.yml/badge.svg)
 
