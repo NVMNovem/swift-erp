@@ -21,7 +21,7 @@ import Foundation
 ///   - `Identifiable`: Associates the `id` with the `Identifiable` protocol's `id` property.
 ///   - `Hashable`: Allows instances to be used in collections that require hashing, like sets or dictionaries.
 ///
-public protocol ERPEnum: RawRepresentable<String>, Codable, Identifiable<String>, Hashable {
+public protocol ERPEnum: RawRepresentable<String>, Codable, Identifiable<String>, Hashable, Sendable {
     
     associatedtype CodableType: Codable, Equatable, CustomStringConvertible
     

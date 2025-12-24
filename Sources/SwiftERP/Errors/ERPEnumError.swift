@@ -12,6 +12,8 @@ public enum ERPEnumError<CodableType: Codable & Equatable & CustomStringConverti
     case invalidCodable(_ codable: CodableType, erpEnum: T.Type)
 }
 
+extension ERPEnumError: Sendable {}
+
 extension ERPEnumError: LocalizedError {
     
     var errorCode: Int {
