@@ -5,26 +5,16 @@ import PackageDescription
 import CompilerPluginSupport
 
 let package = Package(
-    name: "SwiftERP",
-    platforms: [.macOS(.v12), .iOS(.v15), .tvOS(.v15), .watchOS(.v6), .macCatalyst(.v15)],
+    name: "swift-erp",
+    platforms: [.macOS(.v12), .iOS(.v15), .watchOS(.v6), .tvOS(.v15)],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "SwiftERP",
-            targets: ["SwiftERP"]
-        ),
-        .executable(
-            name: "SwiftERPClient",
-            targets: ["SwiftERPClient"]
-        ),
+        .library(name: "SwiftERP", targets: ["SwiftERP"]),
+        .executable(name: "SwiftERPClient", targets: ["SwiftERPClient"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: Version(602, 0, 0)),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        // Macro implementation that performs the source transformation of a macro.
         .macro(
             name: "SwiftERPMacros",
             dependencies: [
@@ -34,10 +24,16 @@ let package = Package(
         ),
 
         // Library that exposes a macro as part of its API, which is used in client programs.
-        .target(name: "SwiftERP", dependencies: ["SwiftERPMacros"]),
+        .target(
+            name: "SwiftERP",
+            dependencies: ["SwiftERPMacros"]
+        ),
 
         // A client of the library, which is able to use the macro in its own code.
-        .executableTarget(name: "SwiftERPClient", dependencies: ["SwiftERP"]),
+        .executableTarget(
+            name: "SwiftERPClient",
+            dependencies: ["SwiftERP"]
+        ),
 
         // A test target used to develop the macro implementation.
         .testTarget(
